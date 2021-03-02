@@ -1,6 +1,12 @@
 # A reimplementation of Codenames with Bots
 
 ## Some useful references for the AI question
+
+
+### About Word2Vec
+https://gist.github.com/aparrish/2f562e3737544cf29aaf1af30362f469
+
+### Specifically about Codenames
 * Jeremy Neiman, [How to Create a Codenames Bot Part 1: Word2vec](https://towardsdatascience.com/how-to-create-a-codenames-bot-part-1-word2vec-62701de38e66)
 * eyaler, [word2vec-slim](https://github.com/eyaler/word2vec-slim)
 * [gensim](https://radimrehurek.com/gensim/)

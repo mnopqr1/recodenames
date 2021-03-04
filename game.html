@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <script src="https://unpkg.com/react/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+
+       
+        <title>Recodenames</title>
+
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+    <body>
+        <div id="app">
+
+        </div>
+
+        <script type="text/babel">
+        class GuesserView extends React.Component {
+            constructor(props) {
+                super(props);
+            }
+            render() {
+                const cards = this.props.words.map((word, i) => {
+                    return <div className="code-card" key={i}>
+                            <p className="front-face">
+                                {word}
+                            </p>
+                            </div>
+                })
+                return (
+                    <div>
+                    <section className="game-board">
+                            {cards}
+                    </section>
+                    </div>
+                    );
+                
+            }
+        }
+        /* https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                let temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+
+        class MasterView extends React.Component {
+            constructor(props) {
+                super(props);
+            }
+
+            render() {
+                const cards = this.props.board.words.map((word, i) => {
+                    return <div className="code-card" key={i}>
+                            <p className={this.props.board.colorOf(word) + "-face"}>
+                                {word}
+                            </p>
+                            </div>
+                })
+                return (
+                    <div>
+                    <section className="game-board">
+                            {cards}
+                    </section>
+                    </div>
+                    );
+                
+            }
+
+
+        }
+
+        class Board {
+            constructor(content) {
+                this.content = content;
+                this.words = this.initWords();
+            }
+
+
+            initWords = () => {
+                const words = [...this.content["blue"], ...this.content["red"], ...this.content["black"], ...this.content["white"]];
+                shuffleArray(words);
+                return words;
+            }
+
+            colorOf = (word) => {
+                console.log(Object.keys(this.content).find(key => this.content[key]));
+                console.log(word);
+                return Object.keys(this.content).find(key => this.content[key].includes(word));
+            }
+
+        }
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    guesser: false,
+                    board: new Board({"blue" : ["chest", "belt", "whip", "space", "cliff", "flat", "fighter", "dressing", "blizzard"],
+                            "red" : ["mummy", "sloth", "chalk", "van", "sled", "attic", "state", "ice"],
+                            "black" : ["steam"],
+                            "white" : ["yard", "web","pie", "shampoo", "scientist", "octopus", "roll"]})
+                }
+            }
+            render() {
+                if (this.state.guesser) {
+                    return <GuesserView words={this.state.board.words}/>
+                } else {
+                    return <MasterView board={this.state.board}/>
+                }
+            }
+        }
+
+        ReactDOM.render(<App />, document.querySelector("#app"));
+        </script>
+    </body>
+</html>

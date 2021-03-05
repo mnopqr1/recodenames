@@ -58,19 +58,14 @@ for i in range(GROUP_SIZE,GROUP_SIZE+1):
             else:
                 break
         bestclues.insert(j, [group, bestclue])
-        # bestclues.append([list(group), list(solvegroup[0])])
 
-#pprint(possibleclues)
-
-#pprint(possibleclues)
-# print("The best clue I found is " + bestclue + ", for the group ", end="") 
-# bestclues_sorted = { k : v for k, v in sorted(bestclues, key= lambda clue: clue[1][1])}
-print("OK, here are the best " + str(N_TO_SHOW) + " clues I found:")
+print("OK, here are some of the best clues I found:")
 print()
 for i in range(0, N_TO_SHOW):
     print("For the group \"", end= "")
     print(", ".join(bestclues[i][0]), end="\", ")
-    print("I found the clue: " + bestclues[i][1][0])
+    print("I found the clues: ", end="")
+    print(', '.join(clue[0] for clue in possibleclues[bestclues[i][0]][:3]))
     print()
 
 

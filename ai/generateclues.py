@@ -14,19 +14,21 @@ SOURCEFILENAME = 'GoogleNews-vectors-negative300-SLIM.bin'
 i = 1
 target = []
 to_avoid = []
-while (i < len(sys.argv) - 2):
+while (i < len(sys.argv) - 3):
     target.append(sys.argv[i])
     i += 1
 GROUP_SIZE = int(sys.argv[i])
 i += 1
 N_TO_SHOW = int(sys.argv[i])
+i += 1
+VOCAB_SIZE = int(sys.argv[i])
 
 print("")
 print("*"*60)
 print("Using word2vec trained with " + SOURCEFILENAME) 
 print("to search for best clue for the words:")
 print(', '.join(target))
-print("Group size: ", GROUP_SIZE)
+print("Group size:", GROUP_SIZE)
 print("*"*60)
 
 model = gensim.models.KeyedVectors.load_word2vec_format(SOURCEFILENAME, binary=True, limit=500000)
@@ -37,9 +39,8 @@ def is_valid_clue(group, clue):
             return False
     return True
 
-
 def best_valid_clues(group, avoid=[]):
-    most_sim = model.most_similar(positive=group, negative=avoid, restrict_vocab=5000, topn=MAX_SIM_SEARCH)
+    most_sim = model.most_similar(positive=group, negative=avoid, restrict_vocab=VOCAB_SIZE, topn=MAX_SIM_SEARCH)
     return [clue for clue in most_sim if is_valid_clue(group,clue[0])]
 
 possibleclues = {}

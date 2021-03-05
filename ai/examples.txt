@@ -1,6 +1,8 @@
-python3 generateclues.py teacher amazon parrot doctor nose bolt christmas button mail
+python3 generateclues.py teacher amazon parrot doctor nose bolt christmas button mail 3 10 5000
 
-python3 generateclues.py state ice mummy sled sloth chalk van attic 2 5
+python3 generateclues.py teacher amazon parrot doctor nose bolt christmas button mail 4 10 50000
 
-python3 generateclues.py chest belt whip space cliff flat fighter dressing blizzard 3 10
+python3 generateclues.py state ice mummy sled sloth chalk van attic 2 5 5000
+
+python3 generateclues.py chest belt whip space cliff flat fighter dressing blizzard 3 10 5000
 

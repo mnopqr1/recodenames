@@ -27,9 +27,9 @@ class GuesserView extends React.Component {
                 />})}
             <button onClick={this.props.toggleView}>Toggle view (Debugging)</button>
             </section>
-            <section className="guesser-controls">
-            <button onClick={this.handleSubmit}>Submit guess</button>
-            </section>
+            <div className="controls">
+                <button onClick={this.handleSubmit} disabled={this.props.phase === "clue"}>Submit guess</button>
+            </div>
             <GameInfo
                 turn={this.props.turn}
                 clues={this.props.clues}

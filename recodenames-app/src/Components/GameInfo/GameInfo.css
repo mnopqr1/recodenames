@@ -1,8 +1,9 @@
 
 .game-info {
+    width: 25%;
     border-radius: 10px;
-    padding:10px;
-    margin:50px;
+    padding: 10px;
+    margin: 20px;
     border-style: groove;
     display: flex;
     flex-direction: column;
@@ -11,7 +12,16 @@
 }
 
 .game-info > div {
-    border-style:groove;
+    border-style: groove;
     border-radius: 10px;
     padding: 5px;
+}
+
+.clue-red {
+    color:darkred;
+    font-size:20px;
+}
+.clue-blue {
+    color:darkblue;
+    font-size:20px;
 }

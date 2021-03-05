@@ -1,16 +1,9 @@
-.clue-red {
-    color:darkred;
-}
-.clue-blue {
-    color:darkblue;
-}
-
 
 
 
 .game-board {
-    width: 640px;
-    height: 640px;
+    width: 50%;
+    height: 80%;
     margin: auto;
     display: flex;
     align-content:space-between;
@@ -18,13 +11,13 @@
 }
 
 
-
-.guesser-controls {
-    width: 100px;
-    height: 80px;
-    margin: 20px;
+.controls {
+    border-radius: 10px;
+    padding:20px;
+    margin:20px;
+    width:25%;
+    
     display: flex;
-    float: right;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
 }
-

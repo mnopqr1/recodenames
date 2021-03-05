@@ -27,7 +27,7 @@ class MasterView extends React.Component {
                 <button onClick={this.props.toggleView}>Toggle view (Debugging)</button>
                 </section>
                 
-                <section className="master-controls">
+                <div className="controls">
                 <input className="clue-input"
                     onKeyPress={this.handleKeyPress} 
                     onChange={this.handleChange} 
@@ -37,8 +37,8 @@ class MasterView extends React.Component {
                     disabled={this.props.phase === "guess"}
                 >
                 </input>
-                <button onClick={this.handleSubmit}>Submit clue</button>
-                </section>    
+                <button onClick={this.handleSubmit} disabled={this.props.phase==="guess"}>Submit clue</button>
+                </div>    
             
 
             <GameInfo
@@ -67,7 +67,7 @@ class MasterView extends React.Component {
     handleSubmit = (event) => {
         this.props.submitClue(this.state.clue);
         this.setState( {
-            clue: ""
+            clue: "waiting for guess..."
         })
     }
 }

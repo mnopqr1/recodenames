@@ -1,0 +1,30 @@
+.clue-red {
+    color:darkred;
+}
+.clue-blue {
+    color:darkblue;
+}
+
+
+
+
+.game-board {
+    width: 640px;
+    height: 640px;
+    margin: auto;
+    display: flex;
+    align-content:space-between;
+    flex-wrap: wrap;
+}
+
+
+
+.guesser-controls {
+    width: 100px;
+    height: 80px;
+    margin: 20px;
+    display: flex;
+    float: right;
+    flex-wrap: wrap;
+}
+

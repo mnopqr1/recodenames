@@ -1,0 +1,18 @@
+.blue-turn {
+    background: lightcyan
+}
+
+.red-turn {
+    background: lightpink
+}
+
+.guesser-view {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    display: flex;
+    margin: 20px;
+    padding: 20px;
+}

@@ -4,6 +4,7 @@ import './App.css';
 
 import GuesserView from '../GuesserView/GuesserView.js';
 import MasterView from '../MasterView/MasterView.js';
+import socket from '../../socket.js';
 
 /* https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
 function shuffleArray(array) {
@@ -28,6 +29,9 @@ class App extends React.Component {
                       "white" : ["yard", "web","pie", "shampoo", "scientist", "octopus", "roll"]}
         this.initWords();            
         this.state = {
+            usernameSelected: false,
+            username: "",
+            userlist: [],
             guesser: false,
             clues: [],
             turn: "red",
@@ -36,36 +40,80 @@ class App extends React.Component {
             guessPlayers: {"red": [], "blue": []},
             masterPlayers: {"red": undefined, "blue": undefined},
             guesserCards: this.words.map((word) => {return {text: word, color: "unknown", turned: false}}),
-            masterCards: this.words.map((word) => {return {text: word, color: this.colorOf(word), turned: false}})
+            masterCards: this.words.map((word) => {return {text: word, color: this.colorOf(word), turned: false}}),
+        };
+
+        socket.on("userlist", (userlist) => this.setState({
+            userlist
+        }));
+    }
+
+
+
+    render() {
+        if (!this.state.usernameSelected) {
+            return <div>
+                <input className="username-input"
+                    onKeyPress={this.handleKeyPress} 
+                    onChange={this.handleChange} 
+                    key="username" 
+                    value={this.state.username} 
+                    type="text"
+                >
+                </input>
+                <button onClick={this.handleSubmit}>Submit</button>
+                </div>
+        } else {
+            if (this.state.guesser) {
+                return <div>
+                    <p>Current users: {this.state.userlist.map( ({userID, username}) =>
+                    `( ${userID}, ${username})`
+                    ).join(',')}</p>
+                    <GuesserView 
+                        cards={this.state.guesserCards}
+                        toggleView={this.toggleView}
+                        submitGuess={this.submitGuess}
+                        clues={this.state.clues}
+                        turn={this.state.turn}
+                        phase={this.state.phase}
+                        score={this.state.score}
+                        />
+                    </div>
+            } else {
+                return <div>
+                    <MasterView 
+                        cards={this.state.masterCards}
+                        toggleView={this.toggleView}
+                        turn={this.state.turn}
+                        submitClue={this.submitClue}
+                        clues={this.state.clues}
+                        phase={this.state.phase}
+                        score={this.state.score}/>
+                    </div>
+            }
         }
     }
 
-    render() {
-        if (this.state.guesser) {
-            return <div>
-                <GuesserView 
-                    cards={this.state.guesserCards}
-                    toggleView={this.toggleView}
-                    submitGuess={this.submitGuess}
-                    clues={this.state.clues}
-                    turn={this.state.turn}
-                    phase={this.state.phase}
-                    score={this.state.score}
-                    />
-                </div>
-        } else {
-            return <div>
-                <MasterView 
-                    cards={this.state.masterCards}
-                    toggleView={this.toggleView}
-                    turn={this.state.turn}
-                    submitClue={this.submitClue}
-                    clues={this.state.clues}
-                    phase={this.state.phase}
-                    score={this.state.score}/>
-                </div>
+    handleKeyPress = (event) => {
+        if (event.key === "Enter") {
+            this.handleSubmit();
         }
     }
+
+    handleChange = (event) => {
+        this.setState( {
+            username: event.target.value
+        })
+    }
+
+    handleSubmit = (event) => {
+        this.setState( {
+            usernameSelected: true
+        });
+        socket.auth = { username: this.state.username };
+        socket.connect();
+    }
+
 
     initWords = () => {
         const words = [...this.board["blue"], 

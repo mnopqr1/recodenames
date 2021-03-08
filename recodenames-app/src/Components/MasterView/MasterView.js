@@ -3,6 +3,7 @@ import './MasterView.css';
 
 import GameInfo from '../GameInfo/GameInfo.js';
 import Card from '../Card/Card.js';
+import socket from '../../socket.js';
 
 class MasterView extends React.Component {
     constructor(props) {

@@ -2,8 +2,9 @@ import React from 'react';
 import './MasterView.css';
 
 import GameInfo from '../GameInfo/GameInfo.js';
+import RoomInfo from '../RoomInfo/RoomInfo.js';
 import Card from '../Card/Card.js';
-import socket from '../../socket.js';
+// import socket from '../../socket.js';
 
 class MasterView extends React.Component {
     constructor(props) {
@@ -23,10 +24,10 @@ class MasterView extends React.Component {
         })
         return (
             <div className={"master-view " + this.props.turn + "-turn"}>
-                <section className="game-board">
+                <div className="game-board">
                         {cards}
                 <button onClick={this.props.toggleView}>Toggle view (Debugging)</button>
-                </section>
+                </div>
                 
                 <div className="controls">
                 <input className="clue-input"
@@ -41,6 +42,10 @@ class MasterView extends React.Component {
                 <button onClick={this.handleSubmit} disabled={this.props.phase==="guess"}>Submit clue</button>
                 </div>    
             
+            <RoomInfo
+                userlist={this.props.userlist}
+                joinTeam={this.props.joinTeam}                
+            />
 
             <GameInfo
                 turn={this.props.turn}

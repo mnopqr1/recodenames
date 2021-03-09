@@ -1,0 +1,26 @@
+
+.room-info {
+    width: 25%;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px;
+    border-style: groove;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+   
+}
+
+.room-info > div {
+    border-style: groove;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.master-user {
+    font-weight: bold;
+}
+
+.spectator-user {
+    font-style: italic;
+}

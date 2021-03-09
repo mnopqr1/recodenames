@@ -3,8 +3,8 @@ import './GameInfo.css';
 
 class GameInfo extends React.Component {
     render() {
-        const clues = this.props.clues.map((clue) => { 
-            return <div className={"clue-" + clue.team}>{clue.content}</div> 
+        const clues = this.props.clues.map((clue, index) => { 
+            return <div className={"clue-" + clue.team} key={index}>{clue.content}</div> 
         });
         return <div className="game-info">
             

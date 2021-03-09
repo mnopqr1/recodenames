@@ -2,6 +2,7 @@ import React from 'react';
 import './GuesserView.css';
 
 import GameInfo from '../GameInfo/GameInfo.js';
+import RoomInfo from '../RoomInfo/RoomInfo.js';
 import Card from '../Card/Card.js'
 
 class GuesserView extends React.Component {
@@ -15,7 +16,7 @@ class GuesserView extends React.Component {
     render() {
         return (
             <div className={"guesser-view " + this.props.turn + "-turn"}>
-            <section className="game-board">
+            <div className="game-board">
                 {this.props.cards.map((card, i) => {
                 return <Card 
                     color={card.color}
@@ -26,10 +27,16 @@ class GuesserView extends React.Component {
                     handleClick={(this.props.phase === "guess") ? (e) => this.onItemSelected(i) : null}
                 />})}
             <button onClick={this.props.toggleView}>Toggle view (Debugging)</button>
-            </section>
+            </div>
             <div className="controls">
                 <button onClick={this.handleSubmit} disabled={this.props.phase === "clue"}>Submit guess</button>
             </div>
+
+            <RoomInfo
+                userlist={this.props.userlist}
+                joinTeam={this.props.joinTeam}                
+            />
+
             <GameInfo
                 turn={this.props.turn}
                 clues={this.props.clues}

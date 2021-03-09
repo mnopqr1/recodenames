@@ -4,6 +4,7 @@ import './App.css';
 
 import GuesserView from '../GuesserView/GuesserView.js';
 import MasterView from '../MasterView/MasterView.js';
+import RegistrationView from '../RegistrationView/RegistrationView.js';
 import socket from '../../socket.js';
 
 /* https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
@@ -18,8 +19,6 @@ function shuffleArray(array) {
 
 
 
-
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -31,6 +30,8 @@ class App extends React.Component {
         this.state = {
             usernameSelected: false,
             username: "",
+            team: "spectator",
+            role: "spectator",
             userlist: [],
             guesser: false,
             clues: [],
@@ -46,29 +47,35 @@ class App extends React.Component {
         socket.on("userlist", (userlist) => this.setState({
             userlist
         }));
+
+        socket.on("team change", (userlist) => this.setState({
+            userlist
+        }))
+
+        socket.on("clue change", (clues) => this.setState({
+            clues
+        }))
+
+        socket.on("phase change", (turn, phase) => this.setState({
+            turn,
+            phase
+        }))
     }
 
 
 
     render() {
         if (!this.state.usernameSelected) {
-            return <div>
-                <input className="username-input"
-                    onKeyPress={this.handleKeyPress} 
-                    onChange={this.handleChange} 
-                    key="username" 
-                    value={this.state.username} 
-                    type="text"
-                >
-                </input>
-                <button onClick={this.handleSubmit}>Submit</button>
-                </div>
+            return (
+                <RegistrationView
+                    registerUser = {this.registerUser}
+                />
+            )
+
         } else {
-            if (this.state.guesser) {
-                return <div>
-                    <p>Current users: {this.state.userlist.map( ({userID, username}) =>
-                    `( ${userID}, ${username})`
-                    ).join(',')}</p>
+            if (this.state.role !== "master") {
+            // if (this.guesser) {
+                return (
                     <GuesserView 
                         cards={this.state.guesserCards}
                         toggleView={this.toggleView}
@@ -77,10 +84,12 @@ class App extends React.Component {
                         turn={this.state.turn}
                         phase={this.state.phase}
                         score={this.state.score}
+                        userlist={this.state.userlist}
+                        joinTeam={this.joinTeam}
                         />
-                    </div>
+                );
             } else {
-                return <div>
+                return (
                     <MasterView 
                         cards={this.state.masterCards}
                         toggleView={this.toggleView}
@@ -88,32 +97,32 @@ class App extends React.Component {
                         submitClue={this.submitClue}
                         clues={this.state.clues}
                         phase={this.state.phase}
-                        score={this.state.score}/>
-                    </div>
+                        score={this.state.score}
+                        userlist={this.state.userlist}
+                        joinTeam={this.joinTeam}
+                        />
+                );
             }
         }
     }
 
-    handleKeyPress = (event) => {
-        if (event.key === "Enter") {
-            this.handleSubmit();
-        }
-    }
-
-    handleChange = (event) => {
-        this.setState( {
-            username: event.target.value
-        })
-    }
-
-    handleSubmit = (event) => {
+    registerUser = (username) => {
         this.setState( {
             usernameSelected: true
         });
-        socket.auth = { username: this.state.username };
+        socket.auth = { username };
         socket.connect();
     }
 
+    joinTeam = (team, role) => {
+        console.log("calling jointeam with value " + team);
+        this.setState( {
+            team,
+            role
+        });
+        socket.emit("join team", team, role);
+        console.log(this.state.userlist);
+    }
 
     initWords = () => {
         const words = [...this.board["blue"], 
@@ -169,6 +178,7 @@ class App extends React.Component {
             clues: [...this.state.clues, newClue],
             phase: "guess"
         }));
+        socket.emit("new clue", newClue);
     }
 
     toggleView = () => {

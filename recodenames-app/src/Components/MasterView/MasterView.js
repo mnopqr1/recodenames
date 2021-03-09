@@ -26,7 +26,7 @@ class MasterView extends React.Component {
             <div className={"master-view " + this.props.turn + "-turn"}>
                 <div className="game-board">
                         {cards}
-                <button onClick={this.props.toggleView}>Toggle view (Debugging)</button>
+                
                 </div>
                 
                 <div className="controls">

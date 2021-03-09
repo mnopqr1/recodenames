@@ -10,10 +10,9 @@ class RoomInfo extends React.Component {
     }
 
     render() {
-        const blue = this.props.userlist.filter((user) => user.team === "blue").map(this.styleUser);
-        const red = this.props.userlist.filter((user) => user.team === "red").map(this.styleUser);
-        const spectator = this.props.userlist.filter((user) => user.team === "spectator").map(this.styleUser);
-        // const all = this.props.userlist.map((user) => user.username).join(", ");
+        const blue = this.props.userList.filter((user) => user.team === "blue").map(this.styleUser);
+        const red = this.props.userList.filter((user) => user.team === "red").map(this.styleUser);
+        const spectator = this.props.userList.filter((user) => user.team === "spectator").map(this.styleUser);
         return <div className="room-info">
             
                 <div className="team blue-team">

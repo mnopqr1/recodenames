@@ -1,31 +1,15 @@
 import React from 'react';
 import './App.css';
 
-
 import MainView from '../MainView/MainView.js';
 import RegistrationView from '../RegistrationView/RegistrationView.js';
 import socket from '../../socket.js';
 
-/* https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        let temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-}
-
-
-
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.board = {"blue" : ["chest", "belt", "whip", "space", "cliff", "flat", "fighter", "dressing", "blizzard"],
-                      "red" : ["mummy", "sloth", "chalk", "van", "sled", "attic", "state", "ice"],
-                      "black" : ["steam"],
-                      "white" : ["yard", "web","pie", "shampoo", "scientist", "octopus", "roll"]}
-        this.initWords();            
+
+        // this.initWords();            
         this.state = {
             usernameSelected: false,
             username: "",
@@ -37,19 +21,15 @@ class App extends React.Component {
             turn: "red",
             phase: "clue",
             score : {"red" : 0, "blue": 0},
-            guessPlayers: {"red": [], "blue": []},
-            masterPlayers: {"red": undefined, "blue": undefined},
-            cardList: [],
-            guesserCards: this.words.map((word) => {return {text: word, color: "unknown", turned: false}}),
-            masterCards: this.words.map((word) => {return {text: word, color: this.colorOf(word), turned: false}}),
+            cards: [],
         };
 
         socket.on("userlist", (userList) => this.setState({
             userList
         }));
 
-        socket.on("cardList", (cardList) => this.setState({
-            cardList
+        socket.on("cardlist", (cards) => this.setState({
+            cards
         }))
 
         socket.on("clue change", (clues) => this.setState({
@@ -64,8 +44,6 @@ class App extends React.Component {
         
     }
 
-
-
     render() {
         if (!this.state.usernameSelected) {
             return (
@@ -79,7 +57,7 @@ class App extends React.Component {
             // if (this.guesser) {
                 return (
                     <MainView 
-                        cards={this.state.guesserCards}
+                        cards={this.state.cards}
                         toggleView={this.toggleView}
                         submitGuess={this.submitGuess}
                         submitClue={this.submitClue}
@@ -93,21 +71,6 @@ class App extends React.Component {
                         joinTeam={this.joinTeam}
                         />
                 );
-            /* } else {
-                return (
-                    <MasterView 
-                        cards={this.state.masterCards}
-                        toggleView={this.toggleView}
-                        turn={this.state.turn}
-                        submitClue={this.submitClue}
-                        clues={this.state.clues}
-                        phase={this.state.phase}
-                        score={this.state.score}
-                        userlist={this.state.userlist}
-                        joinTeam={this.joinTeam}
-                        />
-                );
-            } */
         }
     }
 
@@ -120,28 +83,13 @@ class App extends React.Component {
     }
 
     joinTeam = (team, role) => {
-        console.log("calling jointeam with value " + team);
+        // console.log("calling jointeam with value " + team);
         this.setState( {
             team,
             role
         });
         socket.emit("join team", team, role);
-        console.log(this.state.userList);
-    }
-
-    initWords = () => {
-        const words = [...this.board["blue"], 
-                       ...this.board["red"], 
-                       ...this.board["black"], 
-                       ...this.board["white"]];
-        shuffleArray(words);
-        this.words = words;
-    }
-
-
-
-    colorOf = (word) => {
-        return Object.keys(this.board).find(key => this.board[key].includes(word));
+        // console.log(this.state.userList);
     }
 
     submitGuess = (i) => {
@@ -172,6 +120,7 @@ class App extends React.Component {
     handleWrong = (guess) => {
         return;
     }
+
     submitClue = (clue) => {
         if (clue === "") { alert("no clue entered"); return; }
 
@@ -185,12 +134,6 @@ class App extends React.Component {
         }));
         socket.emit("new clue", newClue);
     }
-
-/*    toggleView = () => {
-        this.setState(state => ({
-            guesser: !state.guesser
-        }));
-    } */
 }
 
 

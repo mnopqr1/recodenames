@@ -6,7 +6,7 @@
     background: lightpink
 }
 
-.guesser-view {
+.view {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -17,4 +17,16 @@
     padding: 20px;
 }
 
+.controls {
+    width: 200px;
+    height: 80px;
+    flex-wrap: wrap row;
+    margin: 20px;
+}
 
+.clue-input {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    font-size: 20px;
+}

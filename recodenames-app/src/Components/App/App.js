@@ -22,6 +22,7 @@ class App extends React.Component {
             phase: "clue",
             score : {"red" : 0, "blue": 0},
             cards: [],
+            guessesLeft: 0
         };
 
         socket.on("userlist", (userList) => this.setState({
@@ -38,14 +39,11 @@ class App extends React.Component {
             clues
         }))
 
-        socket.on("phase change", (turn, phase) => this.setState({
+        socket.on("phase change", (turn, phase, guessesLeft) => this.setState({
             turn,
-            phase
+            phase,
+            guessesLeft
         }))
-
-        
-
-        
     }
 
     render() {
@@ -63,6 +61,7 @@ class App extends React.Component {
                     <MainView 
                         cards={this.state.cards}
                         toggleView={this.toggleView}
+                        guessesLeft={this.state.guessesLeft}
                         submitGuess={this.submitGuess}
                         submitClue={this.submitClue}
                         myTurnToGuess={this.state.phase === "guess" && this.state.team === this.state.turn && this.state.role === "guesser"}

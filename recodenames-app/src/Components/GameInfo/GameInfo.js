@@ -4,8 +4,9 @@ import './GameInfo.css';
 class GameInfo extends React.Component {
     render() {
         const clues = this.props.clues.map((clue, index) => { 
-            return <div className={"clue-" + clue.team} key={index}>{clue.content}</div> 
+            return <div className={"clue-" + clue.team} key={index}>{clue.content} ({clue.number})</div> 
         });
+
         return <div className="game-info">
             
             <div className="earlier-clues">
@@ -23,6 +24,7 @@ class GameInfo extends React.Component {
 
             <div className="game-phase">
             <h2>It is {this.props.turn}'s turn to {this.props.phase}.</h2>
+            {this.props.phase === "guess" ? `Guesses left: ${this.props.guessesLeft}` : ""}
             </div>
 
 

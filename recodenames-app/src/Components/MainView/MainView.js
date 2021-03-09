@@ -74,6 +74,7 @@ class MainView extends React.Component {
                 clues={this.props.clues}
                 score={this.props.score}
                 phase={this.props.phase}
+                guessesLeft={this.props.guessesLeft}
                     />
             </div> 
         );

@@ -103,8 +103,8 @@ broadcastScores = () => {
 io.on("connection", (socket) => {
   const users = userList();
   io.emit("userlist", users);
-  io.emit("phase change", turn, phase);
-  
+  io.emit("phase change", turn, phase, guessesLeft);
+
   broadcastCards();
 
   socket.on("join team", (teamname, rolename) => {
@@ -123,7 +123,7 @@ io.on("connection", (socket) => {
     io.emit("clue change", clues);
     guessesLeft = newClue["number"];
     phase = "guess";
-    io.emit("phase change", turn, phase);
+    io.emit("phase change", turn, phase, guessesLeft);
   })
 
   socket.on("new guess", (i) => {
@@ -144,8 +144,8 @@ io.on("connection", (socket) => {
     if (guessesLeft == 0) {
       phase = "clue";
       turn = (turn === "red") ? "blue" : "red";
-      io.emit("phase change", turn, phase);
     }
+    io.emit("phase change", turn, phase, guessesLeft);
   });
 });
 

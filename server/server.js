@@ -1,3 +1,5 @@
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
+
 const app = require('express')();
 const httpServer = require("http").createServer();
 const io = require("socket.io")(httpServer, {
@@ -34,6 +36,8 @@ var cardsWithColor = words.map((word) => {
 var clues = [];
 var turn = "red";
 var phase = "clue";
+var guessesLeft = 1;
+var score = {"red" : 0, "blue" : 0};
 
 // helper function: randomly shuffle array
 /* https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
@@ -92,31 +96,57 @@ broadcastCards = () => {
   }
 }
 
+broadcastScores = () => {
+  io.emit("scores", score);
+}
+
 io.on("connection", (socket) => {
   const users = userList();
   io.emit("userlist", users);
+  io.emit("phase change", turn, phase);
+  
   broadcastCards();
 
   socket.on("join team", (teamname, rolename) => {
-    // console.log("received join team");
-
     // refuse when the team already has a master
     if (rolename === "master" && hasMaster(teamname)) {
       return;
     }
     socket.team = teamname;
     socket.role = rolename;
-    const users = userList();
-    io.emit("userlist", users);
+    io.emit("userlist", userList());
     broadcastCards();
   });
 
   socket.on("new clue", (newClue) => {
     clues.push(newClue);
     io.emit("clue change", clues);
+    guessesLeft = newClue["number"];
     phase = "guess";
     io.emit("phase change", turn, phase);
   })
+
+  socket.on("new guess", (i) => {
+    guessesLeft -= 1;
+
+    cardsNoColor[i].turned = true;
+    cardsWithColor[i].turned = true;
+    cardsNoColor[i].color = cardsWithColor[i].color;
+    if (board[turn].includes(words[i])) {
+      score[turn] += 1;
+    } else {
+      guessesLeft = 0;
+    }
+
+    broadcastCards();
+    broadcastScores();
+
+    if (guessesLeft == 0) {
+      phase = "clue";
+      turn = (turn === "red") ? "blue" : "red";
+      io.emit("phase change", turn, phase);
+    }
+  });
 });
 
 

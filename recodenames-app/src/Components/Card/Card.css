@@ -23,10 +23,6 @@
     background: darkgray;
 }
 
-.turned {
-    background: darkmagenta;
-}
-
 .blue-col  {
     background: rgb(102, 102, 195);
     color: beige;
@@ -44,3 +40,33 @@
     background: rgb(77, 74, 74);
     color: white;
 }  
+
+.blue-col-turned {
+    background: repeating-linear-gradient(
+  45deg,
+  rgb(102, 102, 195),
+  #606dbc 10px,
+  #465298 10px,
+  #465298 20px
+);
+}
+
+.red-col-turned {
+    background: repeating-linear-gradient(
+  45deg,
+  rgb(240, 90, 90),
+  rgb(240, 90, 90) 10px,
+  rgb(175, 65, 65) 10px,
+  rgb(175, 65, 65) 20px
+);
+}
+
+.white-col-turned {
+    background: repeating-linear-gradient(
+  45deg,
+  whitesmoke,
+  whitesmoke 10px,
+  rgb(185, 182, 182) 10px,
+  rgb(185,182,182) 20px
+);
+}

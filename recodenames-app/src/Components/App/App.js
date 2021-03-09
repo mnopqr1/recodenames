@@ -30,7 +30,9 @@ class App extends React.Component {
 
         socket.on("cardlist", (cards) => this.setState({
             cards
-        }))
+        }));
+
+        socket.on("scores", (score) => this.setState({ score }));
 
         socket.on("clue change", (clues) => this.setState({
             clues
@@ -40,6 +42,8 @@ class App extends React.Component {
             turn,
             phase
         }))
+
+        
 
         
     }
@@ -61,6 +65,8 @@ class App extends React.Component {
                         toggleView={this.toggleView}
                         submitGuess={this.submitGuess}
                         submitClue={this.submitClue}
+                        myTurnToGuess={this.state.phase === "guess" && this.state.team === this.state.turn && this.state.role === "guesser"}
+                        myTurnToClue={this.state.phase === "clue" && this.state.team === this.state.turn && this.state.role === "master"}
                         clues={this.state.clues}
                         turn={this.state.turn}
                         team={this.state.team}
@@ -93,45 +99,24 @@ class App extends React.Component {
     }
 
     submitGuess = (i) => {
-        if (this.board[this.state.turn].includes(this.words[i])) {
-            this.handleCorrect(i);
-        } else {
-            this.handleWrong(i);
-        }
-        this.setState((state) => ({
+        socket.emit("new guess", i);
+        /* this.setState((state) => ({
             turn: (state.turn === "red") ? "blue" : "red",
             phase: "clue"
             // guesserCards: [...state.guesserCards, state.guesserCards[i].turned = true]
-        }))
+        })) */
     }
 
-    handleCorrect = (guess) => {
-        this.setState((state) => {
-            return {
-                score : {
-                    ...state.score,
-                    [state.turn]: state.score[state.turn] + 1               
-                }
-            }
-        });
-       
-    }
 
-    handleWrong = (guess) => {
-        return;
-    }
-
-    submitClue = (clue) => {
+    submitClue = (clue, number) => {
         if (clue === "") { alert("no clue entered"); return; }
 
         const newClue = {
             content: clue, 
+            number: number,
             team: this.state.turn
         };
-        this.setState((state) => ({
-            clues: [...this.state.clues, newClue],
-            phase: "guess"
-        }));
+
         socket.emit("new clue", newClue);
     }
 }

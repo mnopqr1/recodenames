@@ -2,8 +2,7 @@ import React from 'react';
 import './App.css';
 
 
-import GuesserView from '../GuesserView/GuesserView.js';
-import MasterView from '../MasterView/MasterView.js';
+import MainView from '../MainView/MainView.js';
 import RegistrationView from '../RegistrationView/RegistrationView.js';
 import socket from '../../socket.js';
 
@@ -32,7 +31,7 @@ class App extends React.Component {
             username: "",
             team: "spectator",
             role: "spectator",
-            userlist: [],
+            userList: [],
             guesser: false,
             clues: [],
             turn: "red",
@@ -40,16 +39,17 @@ class App extends React.Component {
             score : {"red" : 0, "blue": 0},
             guessPlayers: {"red": [], "blue": []},
             masterPlayers: {"red": undefined, "blue": undefined},
+            cardList: [],
             guesserCards: this.words.map((word) => {return {text: word, color: "unknown", turned: false}}),
             masterCards: this.words.map((word) => {return {text: word, color: this.colorOf(word), turned: false}}),
         };
 
-        socket.on("userlist", (userlist) => this.setState({
-            userlist
+        socket.on("userlist", (userList) => this.setState({
+            userList
         }));
 
-        socket.on("team change", (userlist) => this.setState({
-            userlist
+        socket.on("cardList", (cardList) => this.setState({
+            cardList
         }))
 
         socket.on("clue change", (clues) => this.setState({
@@ -60,6 +60,8 @@ class App extends React.Component {
             turn,
             phase
         }))
+
+        
     }
 
 
@@ -73,22 +75,25 @@ class App extends React.Component {
             )
 
         } else {
-            if (this.state.role !== "master") {
+            // if (this.state.role !== "master") {
             // if (this.guesser) {
                 return (
-                    <GuesserView 
+                    <MainView 
                         cards={this.state.guesserCards}
                         toggleView={this.toggleView}
                         submitGuess={this.submitGuess}
+                        submitClue={this.submitClue}
                         clues={this.state.clues}
                         turn={this.state.turn}
+                        team={this.state.team}
+                        role={this.state.role}
                         phase={this.state.phase}
                         score={this.state.score}
-                        userlist={this.state.userlist}
+                        userList={this.state.userList}
                         joinTeam={this.joinTeam}
                         />
                 );
-            } else {
+            /* } else {
                 return (
                     <MasterView 
                         cards={this.state.masterCards}
@@ -102,7 +107,7 @@ class App extends React.Component {
                         joinTeam={this.joinTeam}
                         />
                 );
-            }
+            } */
         }
     }
 
@@ -121,7 +126,7 @@ class App extends React.Component {
             role
         });
         socket.emit("join team", team, role);
-        console.log(this.state.userlist);
+        console.log(this.state.userList);
     }
 
     initWords = () => {
@@ -181,11 +186,11 @@ class App extends React.Component {
         socket.emit("new clue", newClue);
     }
 
-    toggleView = () => {
+/*    toggleView = () => {
         this.setState(state => ({
             guesser: !state.guesser
         }));
-    }
+    } */
 }
 
 

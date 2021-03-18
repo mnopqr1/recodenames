@@ -33,6 +33,7 @@ print("*"*60)
 
 model = gensim.models.KeyedVectors.load_word2vec_format(SOURCEFILENAME, binary=True, limit=500000)
 
+
 def is_valid_clue(group, clue):
     for word in group:
         if clue.lower() in word.lower() or word.lower() in clue.lower():
@@ -40,7 +41,8 @@ def is_valid_clue(group, clue):
     return True
 
 def best_valid_clues(group, avoid=[]):
-    most_sim = model.most_similar(positive=group, negative=avoid, restrict_vocab=VOCAB_SIZE, topn=MAX_SIM_SEARCH)
+    # most_sim = model.most_similar(positive=group, negative=avoid, restrict_vocab=VOCAB_SIZE, topn=MAX_SIM_SEARCH)
+    most_sim = model.most_similar_cosmul(positive=group, negative=(), topn=MAX_SIM_SEARCH)
     return [clue for clue in most_sim if is_valid_clue(group,clue[0])]
 
 possibleclues = {}

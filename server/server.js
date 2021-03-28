@@ -1,5 +1,7 @@
 const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 
+const BOT_MASTER_FILE = 'bot_master.py';
+
 const app = require('express')();
 const httpServer = require("http").createServer();
 const io = require("socket.io")(httpServer, {
@@ -14,9 +16,10 @@ const io = require("socket.io")(httpServer, {
 const {PythonShell} = require('python-shell');
 
 
-// initialize board
+// for reading in a file
 var fs = require("fs");
-var all_words = fs.readFileSync("./game_wordpool.txt", "utf-8").split("\n");
+
+
 // console.log(all_words[3].toLowerCase());
 
 /* choose n random integers between 0 and N - 1, without repetitions */
@@ -35,16 +38,29 @@ function randomArray(n, N) {
   return array;
 }
 
-var chosenindices = randomArray(25, all_words.length);
-console.log(chosenindices.splice(0,9));
-console.log(chosenindices.splice(0,8));
-console.log(chosenindices.splice(0,7));
-console.log(chosenindices.splice(0,1));
 
-var board = {"blue" : ["chest", "belt", "whip", "space", "cliff", "flat", "fighter", "dressing", "blizzard"],
-             "red" : ["mummy", "sloth", "chalk", "van", "sled", "attic", "state", "ice"],
-             "black" : ["steam"],
-             "white" : ["yard", "web","pie", "shampoo", "scientist", "octopus", "roll"]};
+function pickFrom(sourceArray, indices) {
+  retArray = []
+  for (let i = 0; i < indices.length; i++) {
+    retArray.push(sourceArray[indices[i]]);
+  }
+  return retArray;
+}
+
+function createRandomBoard() {
+  // read words from file
+  var all_words = fs.readFileSync("./game_wordpool.txt", "utf-8").split("\n");
+  
+  // pre-processing: need omit '\n' at the end of every word and make lowercase.
+  all_words = all_words.map(word => word.toLowerCase().substring(0,word.length-1)) 
+  var chosenindices = randomArray(25, all_words.length);
+  return  {"blue" : pickFrom(all_words, chosenindices.splice(0,9)), 
+            "red" : pickFrom(all_words, chosenindices.splice(0,8)), 
+            "white" : pickFrom(all_words, chosenindices.splice(0,7)),
+            "black" : pickFrom(all_words, chosenindices.splice(0,1))};
+}
+
+var board = createRandomBoard();
 const words = [...board["blue"], ...board["red"], ...board["black"], ...board["white"]];
 shuffleArray(words);
 
@@ -142,12 +158,13 @@ getBotClue = (groupSize) => {
     args: arguments // get a clue for the current player's cards
   };
 
-  PythonShell.run('bot_final.py', options, function (err, result){
+  PythonShell.run(BOT_MASTER_FILE, options, function (err, result){
       if (err) throw err;
       let botClue = { content: result[0], 
                       number: groupSize,
                       team: turn };
-      console.log(botClue); // for debugging
+      console.log(result); // for debugging: also shows the cards it pertains to
+
       // TODO: refactor into separate function once I understand async/await better
       // for now just copy-pasted the "new clue" (from human player) procedure
       clues.push(botClue);

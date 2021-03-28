@@ -6,12 +6,7 @@ from itertools import combinations
 
 from operator import itemgetter
 
-
-
-
 MAX_SIM_SEARCH = 10
-
-
 
 VOCAB_SIZE = 50000
 
@@ -42,7 +37,6 @@ if DEBUG_MODE:
     print("*"*60)
 
 model = gensim.models.KeyedVectors.load_word2vec_format(SOURCEFILENAME, binary=True, limit=500000)
-
 
 def is_valid_clue(group, clue):
     for word in group:
@@ -79,6 +73,9 @@ if DEBUG_MODE:
         print(', '.join(clue.__repr__() for clue in possibleclues[i][1][:3]))
         print()
 #print("best clue")
+# print the clue as first return value
 print(possibleclues[0][1][0][0])
-#possibleclues_sorted_by_score = { k : v for k,v in reversed(sorted(possibleclues.items(), key = itemgetter(1)[0])}
-# pprint(possibleclues_sorted_by_score)
+
+# then print the words that the clue pertains to, for debugging
+for word in possibleclues[0][0]:
+    print(word)

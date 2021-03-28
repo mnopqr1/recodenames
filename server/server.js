@@ -8,10 +8,53 @@ const io = require("socket.io")(httpServer, {
   },
 });
 
+// running python bot from JS file
+// adapted from https://www.geeksforgeeks.org/run-python-script-using-pythonshell-from-node-js/
+// import PythonShell module.
+const {PythonShell} = require('python-shell');
 
+function getBotClue(myTeamWords) {
+    let options = {
+        mode: 'text',
+        pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: './', 
+        args: myTeamWords
+    };
+
+    PythonShell.run('bot_final.py', options, function (err, result){
+          if (err) throw err;
+          console.log(result[0]);
+    });
+  }
 
 
 // initialize board
+var fs = require("fs");
+var all_words = fs.readFileSync("./game_wordpool.txt", "utf-8").split("\n");
+// console.log(all_words[3].toLowerCase());
+
+/* choose n random integers between 0 and N - 1, without repetitions */
+function randomArray(n, N) {
+  if (n > N) { console.log("source file too small."); return;}
+  var i = 0;
+  var array = [];
+  while (i < n) {
+    var newchoice = -1
+    do {
+      newchoice = Math.floor(Math.random() * N);
+    } while (array.includes(newchoice))
+    array.push(newchoice);
+    i++;
+  }
+  return array;
+}
+
+var chosenindices = randomArray(25, all_words.length);
+console.log(chosenindices.splice(0,9));
+console.log(chosenindices.splice(0,8));
+console.log(chosenindices.splice(0,7));
+console.log(chosenindices.splice(0,1));
+
 var board = {"blue" : ["chest", "belt", "whip", "space", "cliff", "flat", "fighter", "dressing", "blizzard"],
              "red" : ["mummy", "sloth", "chalk", "van", "sled", "attic", "state", "ice"],
              "black" : ["steam"],
@@ -61,7 +104,7 @@ io.use((socket, next) => {
   socket.team = "spectator";
   socket.role = "spectator";
   next();
-})
+});
 
 userList = () => {
   const users = [];
@@ -128,6 +171,10 @@ io.on("connection", (socket) => {
     io.emit("phase change", turn, phase, guessesLeft);
   })
 
+  socket.on("bot clue", () => {
+    
+  });
+
   socket.on("new guess", (i) => {
     guessesLeft -= 1;
 
@@ -157,3 +204,7 @@ io.on("connection", (socket) => {
 var port = 9000;
 httpServer.listen(port);
 console.log("Listening at port 9000");
+
+console.log("Testing python script:");
+
+getBotClue(board["blue"]);

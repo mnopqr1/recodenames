@@ -5,32 +5,40 @@ from pprint import pprint
 from itertools import combinations
 
 from operator import itemgetter
+
+
+
+
 MAX_SIM_SEARCH = 10
-# GROUP_SIZE = 2
+
+GROUP_SIZE = 3
+
+VOCAB_SIZE = 50000
+
 SHOW_EVERYTHING = True
-SOURCEFILENAME = '../server/google-news-slim.bin'
-# N_TO_SHOW = 5
+DEBUG_MODE = False
+SOURCEFILENAME = './google-news-slim.bin'
+
+# TO DO: don't reload the vectors every time but store the model in memory.
+
+N_TO_SHOW = 10
 
 # read command-line arguments
 i = 1
 target = []
 to_avoid = []
-while (i < len(sys.argv) - 3):
+while (i < len(sys.argv)):
     target.append(sys.argv[i])
     i += 1
-GROUP_SIZE = int(sys.argv[i])
-i += 1
-N_TO_SHOW = int(sys.argv[i])
-i += 1
-VOCAB_SIZE = int(sys.argv[i])
 
-print("")
-print("*"*60)
-print("Using word2vec trained with " + SOURCEFILENAME) 
-print("to search for best clue for the words:")
-print(', '.join(target))
-print("Group size:", GROUP_SIZE)
-print("*"*60)
+if DEBUG_MODE:
+    print("")
+    print("*"*60)
+    print("Using word2vec trained with " + SOURCEFILENAME) 
+    print("to search for best clue for the words:")
+    print(', '.join(target))
+    print("Group size:", GROUP_SIZE)
+    print("*"*60)
 
 model = gensim.models.KeyedVectors.load_word2vec_format(SOURCEFILENAME, binary=True, limit=500000)
 
@@ -60,15 +68,16 @@ for i in range(GROUP_SIZE,GROUP_SIZE+1):
 # possibleclues.sort(key=lambda tup: sum([clue[1] for clue in tup[1][:3]]))
 possibleclues.sort(key=lambda tup: tup[1][0][1], reverse=True)
 
-print("OK, here are some of the best clues I found:")
-print()
-for i in range(0, N_TO_SHOW):
-    print("For the group ", end= "")
-    print(possibleclues[i][0].__repr__(), end=", ")
-    print("I found the clues: ", end="")
-    print(', '.join(clue.__repr__() for clue in possibleclues[i][1][:3]))
+if DEBUG_MODE:
+    print("OK, here are some of the best clues I found:")
     print()
-
-
+    for i in range(0, N_TO_SHOW):
+        print("For the group ", end= "")
+        print(possibleclues[i][0].__repr__(), end=", ")
+        print("I found the clues: ", end="")
+        print(', '.join(clue.__repr__() for clue in possibleclues[i][1][:3]))
+        print()
+#print("best clue")
+print(possibleclues[0][1][0][0])
 #possibleclues_sorted_by_score = { k : v for k,v in reversed(sorted(possibleclues.items(), key = itemgetter(1)[0])}
 # pprint(possibleclues_sorted_by_score)

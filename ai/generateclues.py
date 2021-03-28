@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import gensim
 import sys
 from pprint import pprint
@@ -7,7 +8,7 @@ from operator import itemgetter
 MAX_SIM_SEARCH = 10
 # GROUP_SIZE = 2
 SHOW_EVERYTHING = True
-SOURCEFILENAME = 'GoogleNews-vectors-negative300-SLIM.bin'
+SOURCEFILENAME = '../google-news-slim.bin'
 # N_TO_SHOW = 5
 
 # read command-line arguments
@@ -41,34 +42,31 @@ def is_valid_clue(group, clue):
     return True
 
 def best_valid_clues(group, avoid=[]):
-    # most_sim = model.most_similar(positive=group, negative=avoid, restrict_vocab=VOCAB_SIZE, topn=MAX_SIM_SEARCH)
-    most_sim = model.most_similar_cosmul(positive=group, negative=(), topn=MAX_SIM_SEARCH)
+    most_sim = model.most_similar(positive=group, negative=avoid, restrict_vocab=VOCAB_SIZE, topn=MAX_SIM_SEARCH)
+    # most_sim = model.most_similar_cosmul(positive=group, negative=(), topn=MAX_SIM_SEARCH)
     return [clue for clue in most_sim if is_valid_clue(group,clue[0])]
 
-possibleclues = {}
+possibleclues = []
 bestscore = 0
 bestclues = []
 
 for i in range(GROUP_SIZE,GROUP_SIZE+1):
     for group in combinations(target, i):
-        solvegroup = best_valid_clues(group=group, avoid=to_avoid)
-        possibleclues[group] = solvegroup
+        solvegroup: List[Tuple[str, int]] = best_valid_clues(group=group, avoid=to_avoid)
+        possibleclues.append((group, solvegroup))
         bestclue = list(solvegroup[0])
-        j = 0
-        while j < len(bestclues):
-            if bestclue[1] < bestclues[j][1][1]:
-                j += 1
-            else:
-                break
-        bestclues.insert(j, [group, bestclue])
+
+# sort by best-of-three average
+# possibleclues.sort(key=lambda tup: sum([clue[1] for clue in tup[1][:3]]))
+possibleclues.sort(key=lambda tup: tup[1][0][1])
 
 print("OK, here are some of the best clues I found:")
 print()
 for i in range(0, N_TO_SHOW):
-    print("For the group \"", end= "")
-    print(", ".join(bestclues[i][0]), end="\", ")
+    print("For the group ", end= "")
+    print(possibleclues[i][0].__repr__(), end=", ")
     print("I found the clues: ", end="")
-    print(', '.join(clue[0] for clue in possibleclues[bestclues[i][0]][:3]))
+    print(', '.join(clue.__repr__() for clue in possibleclues[i][1][:3]))
     print()
 
 

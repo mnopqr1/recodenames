@@ -9,6 +9,8 @@ const io = require("socket.io")(httpServer, {
 });
 
 
+
+
 // initialize board
 var board = {"blue" : ["chest", "belt", "whip", "space", "cliff", "flat", "fighter", "dressing", "blizzard"],
              "red" : ["mummy", "sloth", "chalk", "van", "sled", "attic", "state", "ice"],
@@ -152,5 +154,6 @@ io.on("connection", (socket) => {
 
 
 
-
-httpServer.listen(9000);
+var port = 9000;
+httpServer.listen(port);
+console.log("Listening at port 9000");

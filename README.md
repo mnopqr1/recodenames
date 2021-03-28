@@ -13,3 +13,6 @@ https://gist.github.com/aparrish/2f562e3737544cf29aaf1af30362f469
 * [The Codenames AI Competition](https://sites.google.com/view/the-codenames-ai-competition) - couldn't find a report on what happened with this
 
 * Not necessarily useful but came across this research paper which sounded interesting [Towards Reframing Codenames for Computational Modelling and Creativity Support using Associative Creativity Principles](https://dl.acm.org/doi/10.1145/3325480.3325510)
+
+## Paired with
+Justin, Chetan, Sonja

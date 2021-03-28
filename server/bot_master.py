@@ -7,9 +7,7 @@ from itertools import combinations
 from operator import itemgetter
 
 MAX_SIM_SEARCH = 10
-
 VOCAB_SIZE = 50000
-
 SHOW_EVERYTHING = True
 DEBUG_MODE = False
 SOURCEFILENAME = './google-news-slim.bin'

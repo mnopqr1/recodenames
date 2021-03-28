@@ -11,7 +11,7 @@ from operator import itemgetter
 
 MAX_SIM_SEARCH = 10
 
-GROUP_SIZE = 3
+
 
 VOCAB_SIZE = 50000
 
@@ -27,9 +27,10 @@ N_TO_SHOW = 10
 i = 1
 target = []
 to_avoid = []
-while (i < len(sys.argv)):
+while (i < len(sys.argv) - 1):
     target.append(sys.argv[i])
     i += 1
+GROUP_SIZE = int(sys.argv[i])
 
 if DEBUG_MODE:
     print("")

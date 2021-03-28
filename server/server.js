@@ -13,20 +13,6 @@ const io = require("socket.io")(httpServer, {
 // import PythonShell module.
 const {PythonShell} = require('python-shell');
 
-function getBotClue(myTeamWords) {
-    let options = {
-        mode: 'text',
-        pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: './', 
-        args: myTeamWords
-    };
-
-    PythonShell.run('bot_final.py', options, function (err, result){
-          if (err) throw err;
-          console.log(result[0]);
-    });
-  }
-
 
 // initialize board
 var fs = require("fs");
@@ -145,6 +131,33 @@ broadcastScores = () => {
   io.emit("scores", score);
 }
 
+// groupSize is passed as a string! python script handles conversion to int
+getBotClue = (groupSize) => {
+  let arguments = board[turn].concat([groupSize]);
+  // ask python bot for clue
+  let options = {
+    mode: 'text',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: './', 
+    args: arguments // get a clue for the current player's cards
+  };
+
+  PythonShell.run('bot_final.py', options, function (err, result){
+      if (err) throw err;
+      let botClue = { content: result[0], 
+                      number: groupSize,
+                      team: turn };
+      console.log(botClue); // for debugging
+      // TODO: refactor into separate function once I understand async/await better
+      // for now just copy-pasted the "new clue" (from human player) procedure
+      clues.push(botClue);
+      io.emit("clue change", clues);
+      guessesLeft = botClue["number"];
+      phase = "guess";
+      io.emit("phase change", turn, phase, guessesLeft);
+  });
+}
+
 io.on("connection", (socket) => {
   const users = userList();
   io.emit("userlist", users);
@@ -171,9 +184,7 @@ io.on("connection", (socket) => {
     io.emit("phase change", turn, phase, guessesLeft);
   })
 
-  socket.on("bot clue", () => {
-    
-  });
+  socket.on("bot clue", getBotClue);
 
   socket.on("new guess", (i) => {
     guessesLeft -= 1;
@@ -205,6 +216,4 @@ var port = 9000;
 httpServer.listen(port);
 console.log("Listening at port 9000");
 
-console.log("Testing python script:");
-
-getBotClue(board["blue"]);
+/* console.log("Testing python script:"); getBotClue("2"); */

@@ -64,6 +64,7 @@ class App extends React.Component {
                         guessesLeft={this.state.guessesLeft}
                         submitGuess={this.submitGuess}
                         submitClue={this.submitClue}
+                        botClue={this.botClue}
                         myTurnToGuess={this.state.phase === "guess" && this.state.team === this.state.turn && this.state.role === "guesser"}
                         myTurnToClue={this.state.phase === "clue" && this.state.team === this.state.turn && this.state.role === "master"}
                         clues={this.state.clues}
@@ -117,6 +118,10 @@ class App extends React.Component {
         };
 
         socket.emit("new clue", newClue);
+    }
+
+    botClue = (number) => {
+        socket.emit("bot clue", number);
     }
 }
 

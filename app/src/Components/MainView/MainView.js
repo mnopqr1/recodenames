@@ -59,6 +59,9 @@ class MainView extends React.Component {
                 {this.props.myTurnToClue && 
                 <button onClick={this.handleSubmitClue} disabled={this.props.phase==="guess"}>Submit clue</button> 
                 }
+                {this.props.myTurnToClue && 
+                <button onClick={this.handleBotClue} disabled={this.props.phase==="guess"}>Bot clue</button> 
+                }
             </div>
             </div>
                 
@@ -110,6 +113,14 @@ class MainView extends React.Component {
             number: 1
         })
     } 
+
+    handleBotClue = (event) => {
+        this.props.botClue(this.state.number);
+        this.setState( {
+            clue: "",
+            number: 1
+        })
+    }
 
     handleKeyPress = (event) => {
         if (event.key === "Enter") {

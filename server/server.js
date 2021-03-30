@@ -5,13 +5,15 @@
 // for socket io
 const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 
-const app = require('express')();
+const express = require('express');
 const httpServer = require("http").createServer();
 const io = require("socket.io")(httpServer, {
   cors: {
     origin: "http://localhost:3000",
   },
 });
+
+
 
 // for running python bot from JS file
 const {PythonShell} = require('python-shell');
@@ -273,4 +275,14 @@ io.on("connection", (socket) => {
 
 var port = 9000;
 httpServer.listen(port);
-console.log("Listening at port 9000");
+console.log("Server is listening at port 9000");
+
+
+// serve react app
+const path = require('path');
+const app = express();
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+app.listen(3000);

@@ -119,7 +119,8 @@ var score = {"red" : 0, "blue" : 0};
            bot should get previous clues that it gave, shouldn't give the same clue twice.
            bot should only get as positives the words that are left to guess for its team.*/
 
-const BOT_MASTER_PATH = './';            // path to bot for spymaster
+const BOT_DEBUG_MODE = true;           
+const BOT_MASTER_PATH = '../ai/';            // path to bot for spymaster
 const BOT_MASTER_FILE = 'bot_master.py'; // filename of bot for spymaster
 // groupSize is passed as a string! python script handles conversion to int
 getBotClue = (groupSize) => {
@@ -138,7 +139,8 @@ getBotClue = (groupSize) => {
       let botClue = { content: result[0], 
                       number: groupSize,
                       team: turn };
-      // console.log(result); // for debugging: shows the clue as first element and then the cards it is meant for
+      
+      if (BOT_DEBUG_MODE) console.log(result); 
 
       // TODO: refactor into separate function once I understand async/await better
       // for now essentially just copy-pasted the "new clue" (from human player) procedure

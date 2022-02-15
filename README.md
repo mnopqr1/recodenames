@@ -1,5 +1,7 @@
 # A reimplementation of Codenames with Bots
 
+[demo](./codenamesbot.gif)
+
 ## References
 * The wordpool file in server is from here: https://raw.githubusercontent.com/CodenamesAICompetition/Game/master/codenames/game_wordpool.txt 
 
